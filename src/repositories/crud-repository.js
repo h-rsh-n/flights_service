@@ -18,6 +18,9 @@ class CrudRepository{
         id:id
       }
     });
+    if(!response){
+      throw new AppError('Requested item not found',StatusCodes.NOT_FOUND);
+    }
     return response;
   }
 
