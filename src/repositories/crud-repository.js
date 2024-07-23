@@ -18,7 +18,6 @@ class CrudRepository{
         id:id
       }
     });
-    console.log(response);
     if(!response){
       throw new AppError('Requested item not found',StatusCodes.NOT_FOUND);
     }
