@@ -25,7 +25,7 @@ async function deleteCity(id){
     const city = await cityRepository.destroy(id);
     return city;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     if(error.statusCode == StatusCodes.NOT_FOUND){
       throw new AppError('Requested city not found',error.statusCode);
     }
@@ -39,7 +39,7 @@ async function updateCity(id,data){
     const city = await cityRepository.update(id,data);
     return city;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     if(error.name == 'SequelizeUniqueConstraintError'){
       let explanation = [];
       error.errors.forEach(element => {
