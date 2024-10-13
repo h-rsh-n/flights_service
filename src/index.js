@@ -3,8 +3,9 @@ const {serverConfig,Logger} = require('./config');
 const app = express();
 const apiRouter = require('./routes');
 
-app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+
 
 app.use('/api',apiRouter);
 
