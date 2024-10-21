@@ -1,7 +1,10 @@
 const CrudRepository = require('./crud-repository');
 const { where, Sequelize } = require('sequelize');
 const {Airplane,Airport,Flight,City} = require('../models');
-const { required } = require('nodemon/lib/config');
+const { StatusCodes } = require('http-status-codes');
+const AppError = require('../utils/errors/app-error');
+const db = require('../models');
+const {addLockForUpdate} = require('./queries')
 class FlightRepository extends CrudRepository{
   constructor(){
     super(Flight)
@@ -48,6 +51,26 @@ class FlightRepository extends CrudRepository{
       ]
     });
     return response;
+  }
+
+  async updateFlight(flightId,seats,dec){
+    await db.sequelize.query(addLockForUpdate(flightId));
+    try {
+      const flight = await Flight.findByPk(flightId);
+      if(parseInt(dec)){
+        await flight.decrement('totalSeats',{by:seats});
+      }else{
+        await flight.increment('totalSeats',{by:seats})
+      }
+      flight.save();
+      const updatedFlight = await Flight.findByPk(flightId);
+      return updatedFlight;
+    } catch (error) {
+      if(error.statusCode == StatusCodes.NOT_FOUND){
+        throw new AppError('Requested flight was Not Found',StatusCodes.NOT_FOUND);
+      }
+      throw new AppError('Something went wrong while updating the flight details',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
   }
 }
 

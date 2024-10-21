@@ -4,7 +4,6 @@ const AppError = require('../utils/errors/app-error');
 const compareTime = require('../utils/helper/date-check');
 const { Op } = require('sequelize');
 const moment = require('moment-timezone');
-const e = require('express');
 
 const flightRepository = new FlightRepository();
 
@@ -73,8 +72,34 @@ async function getAllFlights(query) {
   }
 }
 
+async function getFlight(id){
+  try {
+    const flight = await flightRepository.get(id);
+    return flight;
+  } catch (error) {
+    //console.log(error)
+    if(error.statusCode == StatusCodes.NOT_FOUND){
+      throw new AppError('Cannot find flight with the requested id',StatusCodes.NOT_FOUND)
+    }
+    throw new AppError('Cannot get the requested flight',StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+}
+
+async function updateFlight(data){
+  try {
+    const flight = await flightRepository.updateFlight(data.flightId,data.seats,data.dec);
+    return flight;
+  } catch (error) {
+    if(error.statusCode == StatusCodes.NOT_FOUND){
+      throw new AppError('Cannot find flight with the requested id',StatusCodes.NOT_FOUND)
+    }
+    throw new AppError('Something went wrong while updating the flight details',StatusCodes.INTERNAL_SERVER_ERROR);
+  }
+}
 
 module.exports = {
   createFlight,
-  getAllFlights
+  getAllFlights,
+  getFlight,
+  updateFlight
 }

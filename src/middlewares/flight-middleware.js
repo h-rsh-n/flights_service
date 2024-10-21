@@ -20,8 +20,9 @@ function validateFlightCreate(req,res,next){
   next();
 }
 
+
 function validateFlightUpdate(req,res,next){
-  const requiredFields = ['flightNumber','airplaneId','departureAirportId','arrivalAirportId','arrivalTime','departureTime','price','totalSeats']
+  const requiredFields = ['seats','dec']
   const missingFields = [];
 
   requiredFields.forEach((field)=>{
@@ -30,9 +31,9 @@ function validateFlightUpdate(req,res,next){
     }
   })
 
-  if(requiredFields.length == missingFields.length){
-    ErrorResponse.message = 'Something went wrong while updating the flight';
-    ErrorResponse.error = new AppError(['No content provided for the updation of the flight'],StatusCodes.BAD_REQUEST);
+  if(missingFields.length>0){
+    ErrorResponse.message = 'Something went wrong while creating the flight';
+    ErrorResponse.error = new AppError(missingFields,StatusCodes.BAD_REQUEST);
     return res.status(StatusCodes.BAD_REQUEST).json(ErrorResponse);
   }
   next();
