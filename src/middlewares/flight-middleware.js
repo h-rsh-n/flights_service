@@ -22,7 +22,7 @@ function validateFlightCreate(req,res,next){
 
 
 function validateFlightUpdate(req,res,next){
-  const requiredFields = ['seats','dec']
+  const requiredFields = ['seats']
   const missingFields = [];
 
   requiredFields.forEach((field)=>{
